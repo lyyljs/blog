@@ -98,18 +98,33 @@ def archives(request,page_number=1):
 	content_dict.update(getRightInfo())
 	return render(request, 'blog/archive.html', content_dict)
 
-class DetailView(generic.DetailView):
-    model = Article
-    template_name = 'blog/detail.html'
+'''
+文章详情
+'''
+def article(request,title):
+	content_dict = {}
+	article = Article.objects.get(title=title)
+	comments = article.comment_set.all()
+	tags = article.tags.all()
+	article.comment_counts = comments.count()
 
-    def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
-        return Article.objects.filter(pub_date__lte=timezone.now())
+	content_dict['this_url'] = 'blog:article'
+	content_dict['article'] = article
+	content_dict['comments'] = comments
+	content_dict.update(getHeaderInfo())
+	content_dict.update(getRightInfo())
+	return render(request, 'blog/article.html', content_dict)
 
-class CategoryView(generic.ListView):
-	template_name = 'blog/category.html'
-	context_object_name = 'category_blog_list'
-	def get_queryset(self):
-		return Article.objects.all()
+'''
+分类
+'''
+def category(request,name,page_number=1):
+	content_dict = {}
+	return render(request, 'blog/category.html', content_dict)
+
+'''
+标签
+'''
+def tag(request,name,page_number=1):
+	content_dict = {}
+	return render(request, 'blog/tag.html', content_dict)

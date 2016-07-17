@@ -13,7 +13,7 @@
 							<!--文章header-->
 							<header class="post-header">
 								<h1 class="post-title" itemprop="name headline">
-									<a class="post-title-link" href="{% url 'blog:detail' blog.id %}" itemprop="url">
+									<a class="post-title-link" href="{% url 'blog:article' blog.title %}" itemprop="url">
 										{{blog.title}}
 									</a>
 								</h1>
@@ -34,7 +34,7 @@
 										</span>
 										<span class="post-meta-item-text">分类于</span>
 										<span itemprop="about" itemscope="" itemtype="https://schema.org/Thing">
-											<a href="{% url 'blog:category' blog.category.id %}" itemprop="url" rel="index">
+											<a href="{% url 'blog:category' blog.category.category_name %}" itemprop="url" rel="index">
 												<span itemprop="name">{{blog.category.category_name}}</span>
 											</a>
 										</span>
@@ -42,7 +42,7 @@
 											
 									<span class="post-comments-count">
 										&nbsp; | &nbsp;
-										<a href="#/#comments" itemprop="discussionUrl">
+										<a href="{% url 'blog:article' blog.title %}/#comments" itemprop="discussionUrl">
 											<span class="post-comments-count ds-thread-count" data-thread-key="{{blog.title}}" itemprop="commentsCount">{{blog.comment_counts}}条评论</span>
 										</a>
 									</span>
@@ -52,7 +52,7 @@
 							<div class="post-body" itemprop="articleBody">
 								{{ blog.content|truncatewords:100|safe }}
 								<div class="post-more-link text-center">
-									<a class="btn" href="{% url 'blog:detail' blog.id %}" rel="contents">
+									<a class="btn" href="{% url 'blog:article' blog.title %}" rel="contents">
 										阅读全文
 									</a>
 								</div>
