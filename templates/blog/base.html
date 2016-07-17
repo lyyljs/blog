@@ -1,0 +1,47 @@
+{% load staticfiles %}<!DOCTYPE html>
+<html class="theme-next mist use-motion">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<link rel="stylesheet" type="text/css" href="{% static "blog/css/jquery.fancybox.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "blog/css/front.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "blog/css/font-awesome.min.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "blog/css/main.css" %}" />
+{% block extrastyle %}{% endblock %}
+<title>{% block title %}Kirito{% endblock %}</title>
+{% block extrahead %}{% endblock %}
+<style type="text/css">.fancybox-margin{margin-right:17px;}</style>
+<script type="text/javascript" id="hexo.configuration">
+	var NexT = window.NexT || {};
+	var CONFIG = {
+		scheme: 'Mist',
+		sidebar: {"position":"right","display":"always"},
+		fancybox: true,
+		motion: true,
+		duoshuo: {
+			userId: 0,
+			author: 'Kirito'
+		}
+	};
+</script>
+</head>
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans" class="" style="padding-right: 320px;">
+	<div class="container one-collumn sidebar-position-right page-home ">
+		{% include 'blog/header.html' %}
+		{% block content %}
+		{% endblock %}
+		{% include 'blog/footer.html' %}
+	</div>
+	<script type="text/javascript" src="{% static 'blog/js/index.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/fastclick.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/jquery.lazyload.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/jquery.fancybox.pack.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/velocity.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/velocity.ui.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/utils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/motion.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/bootstrap.js' %}"></script>
+</body>
