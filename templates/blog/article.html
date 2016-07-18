@@ -1,5 +1,9 @@
 {% extends 'blog/base.html' %}
 {% load staticfiles %}
+{% block title %}{{article.title}} | Kirito{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static "blog/css/embed.default.css" %}" />
+{% endblock %}
 {% block content %}
 <main id="main" class="main">
 	<div class="main-inner">
@@ -37,7 +41,7 @@
 											
 									<span class="post-comments-count">
 										&nbsp; | &nbsp;
-										<a href="{% url 'blog:article' article.title %}/#comments" itemprop="discussionUrl">
+										<a href="{% url 'blog:article' article.title %}#comments" itemprop="discussionUrl">
 											<span class="post-comments-count ds-thread-count" data-thread-key="{{article.title}}" itemprop="commentsCount">{{article.comment_counts}}条评论</span>
 										</a>
 									</span>
@@ -68,47 +72,51 @@
 											<footer class="post-footer">
 												<div class="post-tags">
 												{% for tag in tags %}
-													<a href ="{% url 'blog:tag' tag.tag_name %}" rel="tag">{{tag.tag_name}}</a>
+													<a href ="{% url 'blog:tag' tag.tag_name %}" rel="tag">#{{tag.tag_name}}</a>
 												{% endfor%}
 												</div>
 												<div class="post-nav">
+													{% if next_blog.title %}
 													<div class="post-nav-next post-nav-item">
-														<a href="#" rel="next" title="Java+Mac+Selenium入门">
-															<i class="fa fa-chevron-left"></i> Java+Mac+Selenium入门
+														<a href="{% url 'blog:article' next_blog.title %}" rel="next" title="{{next_blog.title}}">
+															<i class="fa fa-chevron-left"></i> {{next_blog.title}}
 														</a>
 													</div>
+													{% endif %}
+													{% if prev_blog.title %}
 													<div class="post-nav-prev post-nav-item">
-														<a href="#" rel="prev" title="Git结合tar自动打升级包">
-															Git结合tar自动打升级包 <i class="fa fa-chevron-right"></i>
+														<a href="{% url 'blog:article' prev_blog.title %}" rel="prev" title="{{prev_blog.title}}">
+															{{prev_blog.title}} <i class="fa fa-chevron-right"></i>
 														</a>
 													</div>
+													{% endif %}
 												</div>
 											</footer>
 										</div>
 									</div>
 					</article>
 								
-								<div class="post-spread">
-									<div class="ds-share flat" data-thread-key="#" data-title="#" data-content="" data-url="#" id="ds-share">
-										<div class="ds-share-inline" id="ds-reset">
-											<ul class="ds-share-icons-16">
-												<li data-toggle="ds-share-icons-more"><a class="ds-more flat" href="javascript:void(0);">分享到：</a></li>
-												<li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
-												<li><a class="ds-qzone flat" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-												<li><a class="ds-qqt flat" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-												<li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-											</ul>
-											
-										</div>
-									</div>
-								</div>
+					<div class="post-spread">
+						<div class="ds-share flat" data-thread-key="#" data-title="#" data-content="" data-url="#" id="ds-share">
+							<div class="ds-share-inline" id="ds-reset">
+								<ul class="ds-share-icons-16">
+									<li data-toggle="ds-share-icons-more"><a class="ds-more flat" href="javascript:void(0);">分享到：</a></li>
+									<li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+									<li><a class="ds-qzone flat" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+									<li><a class="ds-qqt flat" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+									<li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+								</ul>
+								
 							</div>
 						</div>
-						<div class="comments" id="comments">
-						</div>
 					</div>
-					
-					{% include 'blog/rightInfo.html' %}
 				</div>
-			</main>
+			</div>
+			<div class="comments" id="comments">
+				
+			</div>
+		</div>
+		{% include 'blog/rightInfo.html' %}
+	</div>
+</main>
 {% endblock %}

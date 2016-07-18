@@ -107,10 +107,23 @@ def article(request,title):
 	comments = article.comment_set.all()
 	tags = article.tags.all()
 	article.comment_counts = comments.count()
+	next_blog = Article.objects.filter(create_time__lt=article.create_time).filter(is_draft=False).order_by('-create_time')[:1]
+	prev_blog = Article.objects.filter(create_time__gt=article.create_time).filter(is_draft=False).order_by('create_time')[:1]
 
 	content_dict['this_url'] = 'blog:article'
 	content_dict['article'] = article
+	try:
+		content_dict['next_blog'] = next_blog[0]
+	except Exception as e:
+		content_dict['next_blog'] = next_blog
+
+	try:
+		content_dict['prev_blog'] = prev_blog[0]
+	except Exception as e:
+		content_dict['prev_blog'] = prev_blog
+
 	content_dict['comments'] = comments
+	content_dict['tags'] = tags
 	content_dict.update(getHeaderInfo())
 	content_dict.update(getRightInfo())
 	return render(request, 'blog/article.html', content_dict)
