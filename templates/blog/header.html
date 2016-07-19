@@ -36,7 +36,7 @@
 							</li>
 							{% for category in category_list %}
 								<li class="menu-item menu-item-{{category.category_name}}" style="opacity: 1; transform: translateY(0px);">
-								<a href="{% url 'blog:category' category.id %}" rel="section">
+								<a href="{% url 'blog:category' category.category_name %}" rel="section">
 									<i class="menu-item-icon fa fa-question-circle fa-fw"></i> <br>
 									{{category.category_name}}
 								</a>

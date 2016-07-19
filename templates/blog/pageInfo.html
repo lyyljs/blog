@@ -2,10 +2,18 @@
 				<!--分页-->
 				<nav class="pagination">
 					{% ifnotequal page_number 1 %}
-					<a class="extend prev" rel="prev" href="{% url this_url page_number|add:-1 %}"><i class="fa fa-angle-left"></i></a>
+						{% if param %}
+							<a class="extend prev" rel="prev" href="{% url this_url param page_number|add:-1 %}"><i class="fa fa-angle-left"></i></a>
+						{% else %}
+							<a class="extend prev" rel="prev" href="{% url this_url page_number|add:-1 %}"><i class="fa fa-angle-left"></i></a>
+						{% endif %}
 					{% endifnotequal %}
 					{% if page_number < total_pages|add:-1 and page_number > 2 %}
-						<a class="page-number" href="{% url this_url %}">1</a>
+						{% if param %}
+							<a class="page-number" href="{% url this_url param %}">1</a>
+						{% else %}
+							<a class="page-number" href="{% url this_url %}">1</a>
+						{% endif %}
 						{% if page_number|add:-2 > 1 %}
 							<span class="space">…</span>
 						{% endif %}
@@ -13,15 +21,27 @@
 							{% if page_number == number %}
 								<span class="page-number current">{{page_number}}</span>
 							{% else %}
-								<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% if param %}
+									<a class="page-number" href="{% url this_url param number %}">{{number}}</a>
+								{% else %}
+									<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 						{% if page_number|add:2 < total_pages %}
 							<span class="space">…</span>
 						{% endif %}
-						<a class="page-number" href="{% url this_url total_pages %}">{{total_pages}}</a>
+						{% if param %}
+							<a class="page-number" href="{% url this_url param total_pages %}">{{total_pages}}</a>
+						{% else %}
+							<a class="page-number" href="{% url this_url total_pages %}">{{total_pages}}</a>
+						{% endif %}
 					{% elif page_number > 2 %}
-						<a class="page-number" href="{% url this_url %}">1</a>
+						{% if param %}
+							<a class="page-number" href="{% url this_url param %}">1</a>
+						{% else %}
+							<a class="page-number" href="{% url this_url %}">1</a>
+						{% endif %}
 						{% if page_number|add:-2 > 1 %}
 							<span class="space">…</span>
 						{% endif %}
@@ -29,7 +49,11 @@
 							{% if page_number == number %}
 								<span class="page-number current">{{page_number}}</span>
 							{% else %}
-								<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% if param %}
+									<a class="page-number" href="{% url this_url param number %}">{{number}}</a>
+								{% else %}
+									<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 					{% elif page_number < total_pages|add:-1 %}
@@ -37,23 +61,39 @@
 							{% if page_number == number %}
 								<span class="page-number current">{{page_number}}</span>
 							{% else %}
-								<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% if param %}
+									<a class="page-number" href="{% url this_url param number %}">{{number}}</a>
+								{% else %}
+									<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 						{% if page_number|add:2 < total_pages %}
 							<span class="space">…</span>
 						{% endif %}
-						<a class="page-number" href="{% url this_url total_pages %}">{{total_pages}}</a>
+						{% if param %}
+							<a class="page-number" href="{% url this_url param total_pages %}">{{total_pages}}</a>
+						{% else %}
+							<a class="page-number" href="{% url this_url total_pages %}">{{total_pages}}</a>
+						{% endif %}
 					{% else %}
 						{% for number in l_range %}
 							{% if page_number == number %}
 								<span class="page-number current">{{page_number}}</span>
 							{% else %}
-								<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% if param %}
+									<a class="page-number" href="{% url this_url param number %}">{{number}}</a>
+								{% else %}
+									<a class="page-number" href="{% url this_url number %}">{{number}}</a>
+								{% endif %}
 							{% endif %}
 						{% endfor %}
 					{% endif %}
 					{% ifnotequal page_number total_pages %}
-					<a class="extend next" rel="next" href="{% url this_url page_number|add:1 %}"><i class="fa fa-angle-right"></i></a>
+						{% if param %}
+							<a class="extend next" rel="next" href="{% url this_url param page_number|add:1 %}"><i class="fa fa-angle-right"></i></a>
+						{% else %}
+							<a class="extend next" rel="next" href="{% url this_url page_number|add:1 %}"><i class="fa fa-angle-right"></i></a>
+						{% endif %}
 					{% endifnotequal %}
 				</nav>

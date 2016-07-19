@@ -18,7 +18,7 @@
 								
 								<nav class="site-state motion-element" style="opacity: 1; display: block; transform: translateX(0px);">
 									<div class="site-state-item site-state-posts">
-										<a href="#archives">
+										<a href="{% url 'blog:archives'%}">
 											<span class="site-state-item-count">{{article_count}}</span>
 											<span class="site-state-item-name">日志</span>
 										</a>
@@ -28,7 +28,7 @@
 										<span class="site-state-item-name">分类</span>
 									</div>
 									<div class="site-state-item site-state-tags">
-										<a href="#tags">
+										<a href="{% url 'blog:tags'%}">
 											<span class="site-state-item-count">{{tag_count}}</span>
 											<span class="site-state-item-name">标签</span>
 										</a>
@@ -36,7 +36,7 @@
 								</nav>
 								
 								<div class="feed-link motion-element" style="opacity: 1; display: none; transform: translateX(0px);">
-									<a href="#atom.xml" rel="alternate">
+									<a href="#atom.xml" rel="alternate" style="display: none;">
 										<i class="fa fa-rss"></i>
 										RSS
 									</a>

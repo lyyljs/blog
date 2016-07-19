@@ -1,0 +1,39 @@
+{% extends 'blog/base.html' %}
+{% load staticfiles %}
+{% block title %}{{category.category_name}} | Kirito{% endblock %}
+{% block content %}
+<main id="main" class="main">
+	<div class="main-inner">
+		<div class="content-wrap">
+			<div id="content" class="content page-archive">
+				<section id="posts" class="posts-collapse">
+					<div class="collection-title">
+						<h2>
+							{{category.category_name}}
+							<small>分类</small>
+						</h2>
+					</div>
+					{% for node in node_list %}
+						<article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article" style="opacity: 1; display: block; transform: translateY(0px);">
+							<header class="post-header">
+								<h1 class="post-title">
+									<a class="post-title-link" href="{% url 'blog:article' node.title %}" itemprop="url">
+										<span itemprop="name">{{node.title}}</span>
+									</a>
+								</h1>
+								<div class="post-meta">
+									<time class="post-time" itemprop="dateCreated" datetime="{{node.create_time|date:"Y-m-d H:i"}}" content="{{node.create_time|date:"Y-m-d"}}">
+										{{node.create_time|date:"m-d"}}
+									</time>
+								</div>
+							</header>
+						</article>
+					{% endfor %}			
+				</section>
+				{% include 'blog/pageInfo.html' %}
+			</div>
+		</div>
+		{% include 'blog/rightInfo.html' %}
+	</div>
+</main>
+{% endblock %}

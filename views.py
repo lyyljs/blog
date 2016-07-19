@@ -7,7 +7,7 @@ from django.utils import timezone
 from .models import *
 import datetime,time,copy
 
-PAGE_SIZE = 8
+PAGE_SIZE = 2
 '''
 获取头部信息（分类信息）
 '''
@@ -132,12 +132,28 @@ def article(request,title):
 分类
 '''
 def category(request,name,page_number=1):
-	content_dict = {}
+	content_dict = getPageInfo(page_number)
+	category = Category.objects.get(category_name=name)
+	node_list = Article.objects.filter(is_draft=False).filter(category=category).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
+
+	content_dict['this_url'] = 'blog:category'
+	content_dict['param'] = name
+	content_dict['category'] = category
+	content_dict['node_list'] = node_list
+	content_dict.update(getHeaderInfo())
+	content_dict.update(getRightInfo())
 	return render(request, 'blog/category.html', content_dict)
 
 '''
 标签
 '''
 def tag(request,name,page_number=1):
+	content_dict = {}
+	return render(request, 'blog/tag.html', content_dict)
+
+'''
+标签列表
+'''
+def tags(request):
 	content_dict = {}
 	return render(request, 'blog/tag.html', content_dict)
