@@ -145,6 +145,56 @@ def category(request,name,page_number=1):
 	return render(request, 'blog/category.html', content_dict)
 
 '''
+生成标签云的字体大小或颜色值
+'''
+def generateSizeList(min_value,max_value,groups,acc):
+	if (groups <= 2):
+		return [min_value,max_value]
+	else:
+		step = (max_value-min_value)/(groups-1)
+		value = min_value
+		result = []
+		while value<max_value:
+			result.append(round(value,acc))
+			value += step
+		result.append(max_value)
+		return result
+
+'''
+获取标签云
+'''
+def get_tag_cloud(tags):
+	tag_ref_count_set = set()
+	max_ref_count = 0
+	min_ref_count = Article.objects.all().count()
+	for tag in tags:
+		tag.ref_count = tag.article_set.all().count()
+		tag_ref_count_set.add(tag.ref_count)
+		if (tag.ref_count > max_ref_count):
+			max_ref_count = tag.ref_count
+		if (tag.ref_count < min_ref_count):
+			min_ref_count = tag.ref_count
+
+	step_diff = max_ref_count - min_ref_count
+	groups = len(tag_ref_count_set)
+	sorted_tag_refs = list(tag_ref_count_set)
+	sorted_tag_refs.sort()
+
+	MIN_FONT_SIZE = 12
+	MAX_FONT_SIZE = 30
+	MIN_COLOR_VAL = 17
+	MAX_COLOR_VAL = 204
+	FONT_SIZES = generateSizeList(MIN_FONT_SIZE, MAX_FONT_SIZE, groups, 1)
+	COLORS = generateSizeList(MIN_COLOR_VAL, MAX_COLOR_VAL, groups, 0)
+	COLORS.reverse()
+	for tag in tags:
+		index = sorted_tag_refs.index(tag.ref_count)
+		tag.font_size = FONT_SIZES[index]
+		color = str(COLORS[index])
+		tag.color = 'rgb(' + color + ',' + color + ',' + color + ')'
+	return {'tags':tags}
+
+'''
 标签
 '''
 def tag(request,name,page_number=1):
@@ -156,4 +206,9 @@ def tag(request,name,page_number=1):
 '''
 def tags(request):
 	content_dict = {}
-	return render(request, 'blog/tag.html', content_dict)
+	tags = Tag.objects.all()
+
+	content_dict.update(get_tag_cloud(tags))
+	content_dict.update(getHeaderInfo())
+	content_dict.update(getRightInfo())
+	return render(request, 'blog/tags.html', content_dict)
