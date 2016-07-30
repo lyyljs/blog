@@ -1,5 +1,6 @@
 {% extends 'blog/base.html' %}
 {% load staticfiles %}
+{% load custom_markdown %}
 {% block content %}
 <main id="main" class="main">
 	<div class="main-inner">
@@ -50,7 +51,7 @@
 							</header>
 							<!--文章正文-->
 							<div class="post-body" itemprop="articleBody">
-								{{ blog.content|truncatewords:100|safe }}
+								{{ blog.content|truncatechars:500|custom_markdown }}
 								<div class="post-more-link text-center">
 									<a class="btn" href="{% url 'blog:article' blog.title %}" rel="contents">
 										阅读全文

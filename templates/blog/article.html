@@ -1,5 +1,6 @@
 {% extends 'blog/base.html' %}
 {% load staticfiles %}
+{% load custom_markdown %}
 {% block title %}{{article.title}} | Kirito{% endblock %}
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{% static "blog/css/embed.default.css" %}" />
@@ -49,7 +50,7 @@
 						</header>
 									
 						<div class="post-body" itemprop="articleBody">
-							{{ article.content|safe }}
+							{{ article.content | custom_markdown }}
 										
 									<div>
 										<div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center">
