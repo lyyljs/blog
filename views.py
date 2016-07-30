@@ -198,7 +198,16 @@ def get_tag_cloud(tags):
 标签
 '''
 def tag(request,name,page_number=1):
-	content_dict = {}
+	content_dict = getPageInfo(page_number)
+	tag = Tag.objects.get(tag_name=name)
+	node_list = Article.objects.filter(is_draft=False, tags=tag).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
+
+	content_dict['this_url'] = 'blog:tag'
+	content_dict['param'] = name
+	content_dict['tag'] = tag
+	content_dict['node_list'] = node_list
+	content_dict.update(getHeaderInfo())
+	content_dict.update(getRightInfo())
 	return render(request, 'blog/tag.html', content_dict)
 
 '''
