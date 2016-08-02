@@ -1,3 +1,4 @@
+		{% load staticfiles %}
 		<div class="headband"></div>
 		<header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
 				<div class="header-inner">
@@ -48,6 +49,12 @@
 									标签云
 								</a>
 							</li>
+							<li class="menu-item menu-item-search" style="opacity: 1; transform: translateY(0px);">        
+           						<a href="#" class="popup-trigger">
+    									<i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            								搜索
+          						</a>
+        						</li>
 							<li class="menu-item menu-item-about" style="opacity: 1; transform: translateY(0px);">
 								<a href="#about" rel="section">
 									<i class="menu-item-icon fa fa-user fa-fw"></i> <br>
@@ -55,6 +62,59 @@
 								</a>
 							</li>
 						</ul>
+
+						<div class="site-search" style="display:none;">
+							<div class="algolia-popup popup" style="display: block;">
+								<div class="algolia-search">
+									<div class="algolia-search-input-icon">
+										<i class="fa fa-search"></i>
+									</div>
+									<div class="algolia-search-input" id="algolia-search-input">
+										<div class="ais-search-box">
+											<input autocapitalize="off" autocomplete="off" autocorrect="off" placeholder="搜索" role="textbox" spellcheck="false" type="text" value="" class="ais-search-box--input">
+										</div>
+									</div>
+								</div>
+								<div class="algolia-results" style="display:none;">
+									<div id="algolia-stats">
+										<div data-reactroot="" class="ais-root ais-stats">
+											<div class="ais-body ais-stats--body">
+												<div><span id="totals">0</span> 条相关条目<span class="algolia-powered">  
+													<img src="{% static 'blog/images/head.gif' %}" alt="Kirito"></span><hr>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="algolia-hits">
+										<div data-reactroot="" class="ais-hits ais-hits__empty">
+											<div id="algolia-hits-empty"></div>
+										</div>
+										<div data-reactroot="" class="ais-hits" id="non_empty_list">
+										</div>
+									</div>
+
+									<div id="algolia-pagination" class="algolia-pagination">
+										<ul data-reactroot="" class="ais-pagination pagination">
+											<li class="ais-pagination--item pagination-item ais-pagination--item__previous">
+												<a class="ais-pagination--link page-number" href="#"><i class="fa fa-angle-left"></i></a>
+											</li>
+											<li class="ais-pagination--item pagination-item ais-pagination--item__page">
+												<a class="ais-pagination--link page-number" href="#">1</a>
+											</li>
+											<li class="ais-pagination--item pagination-item ais-pagination--item__page ais-pagination--item__active current">
+												<a class="ais-pagination--link page-number" href="#">4</a>
+											</li>
+											<li class="ais-pagination--item pagination-item ais-pagination--item__next">
+												<a class="ais-pagination--link page-number" href="#"><i class="fa fa-angle-right"></i></a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<span class="popup-btn-close">
+									<i class="fa fa-times-circle"></i>
+								</span>
+							</div>
+						</div>
 					</nav>
 				</div>
 			</header>

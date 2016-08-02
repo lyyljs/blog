@@ -1,6 +1,7 @@
 import datetime,time
 from django.utils import timezone
 from django.db import models
+import json
 
 class User(models.Model):
 	user_name = models.CharField(max_length=50)
@@ -33,6 +34,8 @@ class Article(models.Model):
 	is_draft = models.BooleanField(default=True)
 	def __str__(self):
 		return self.title + ' ' + self.create_time.__str__()
+	def toDict(self):
+		dict([(attr, getattr(self, attr)) for attr in [f.name for f in self._meta.fields]])
 
 class Comment(models.Model):
 	content = models.TextField()

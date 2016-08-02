@@ -10,6 +10,7 @@
 <link rel="stylesheet" type="text/css" href="{% static "blog/css/front.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "blog/css/font-awesome.min.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "blog/css/main.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "blog/css/search.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "blog/highlight/styles/default.css" %}" />
 {% block extrastyle %}{% endblock %}
 <title>{% block title %}Kirito{% endblock %}</title>
@@ -33,14 +34,138 @@
 		{% include 'blog/footer.html' %}
 	</div>
 	<script type="text/javascript" src="{% static 'blog/js/index.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/fastclick.min.js' %}"></script>
-	<!--<script type="text/javascript" src="{% static 'blog/js/jquery.lazyload.js' %}"></script>-->
+	<!--<script type="text/javascript" src="{% static 'blog/js/fastclick.min.js' %}"></script>
+
+	<script type="text/javascript" src="{% static 'blog/js/jquery.lazyload.js' %}"></script>
+
 	<script type="text/javascript" src="{% static 'blog/js/jquery.fancybox.pack.js' %}"></script>
 	<script type="text/javascript" src="{% static 'blog/js/velocity.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'blog/js/velocity.ui.min.js' %}"></script>
+
 	<script type="text/javascript" src="{% static 'blog/js/utils.js' %}"></script>
+
 	<script type="text/javascript" src="{% static 'blog/js/motion.js' %}"></script>
-	<script type="text/javascript" src="{% static 'blog/js/bootstrap.js' %}"></script>
+	<script type="text/javascript" src="{% static 'blog/js/bootstrap.js' %}"></script>-->
 	<script type="text/javascript" src="{% static 'blog/highlight/highlight.pack.js' %}"></script>
 	<script>hljs.initHighlightingOnLoad();</script>
+	<div class="popoverlay"></div>
+	<script type="text/javascript">
+		$.ajaxSetup({
+    			data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+		});
+
+		function hideSearchWindow(){
+			$(".site-search").hide();
+			$(".popoverlay").hide();
+		}
+
+		function showSearchWindow(){
+			$(".site-search").show();
+			$(".popoverlay").show();
+		}
+
+		function getHighLight(title, value){
+			var re = new RegExp(value,"gmi");
+			var match_list = title.match(re);
+			var split_list = title.split(re);
+			if (match_list == null){
+				return split_list[0]
+			}else{
+				var ret = '';
+				for (var i = 0; i < match_list.length; i++){
+					ret += split_list[i] + '<em class="highlight">' + match_list[i] + '</em>';
+				}
+				ret += split_list[split_list.length - 1]
+				return ret;
+			}
+			//return title.replace(new RegExp(value,"gmi"),'<em class="highlight">' + value + '</em>');
+		}
+
+		function haveArticles(){
+			$("#algolia-stats").show();
+			$(".ais-hits").show();
+			$(".ais-hits__empty").hide();
+			$("#algolia-pagination").show();
+			$(".algolia-results").show();
+		}
+
+		function haveNoneArticle(){
+			$("#algolia-stats").hide();
+			$(".ais-hits").hide();
+			$(".ais-hits__empty").show();
+			$("#algolia-pagination").hide();
+			$(".algolia-results").show();
+		}
+
+		function goToPage(key, page){
+			searchArticle(key, Number(page));
+		}
+
+		function generatePage(page, total_pages, key){
+			var html = '';
+			if (page > 1){
+				html += '<li class="ais-pagination--item pagination-item ais-pagination--item__previous">';
+				html += '<a class="ais-pagination--link page-number" href=\'javascript:goToPage("' + key + '",' + (page-1) + 
+					')\'><i class="fa fa-angle-left"></i></a></li>';
+			}
+			for (var i = 1; i <= total_pages; i++){
+				html += '<li class="ais-pagination--item pagination-item ais-pagination--item__page';
+				if (page == i){
+					html += ' ais-pagination--item__active current';
+				}
+				html += '"><a class="ais-pagination--link page-number" href=\'javascript:goToPage("' + key + '",' + i + ')\'>' + i + '</a></li>';
+			}
+			if (page < total_pages){
+				html += '<li class="ais-pagination--item pagination-item ais-pagination--item__next"><a class="ais-pagination--link page-number" href=\'javascript:goToPage("' + key + '",' + (page+1) + ')\'><i class="fa fa-angle-right"></i></a></li>';
+			}
+			$(".ais-pagination").html(html);
+		}
+
+		function searchArticle(ftitle, page){
+			var requestUrl = "/search/" + ftitle + "/" + page;
+			$.ajax({
+				type:"GET",
+				url:requestUrl,
+				success:function(data){
+					if (data.total_count != undefined && Number(data.total_count) > 0){
+						$("#totals").html(data.total_count);		
+						var html = "";
+						var list = data.blog_list;
+						for (var i=0; i < list.length; i++){
+							var title = list[i];
+							html += '<div class="ais-hits--item algolia-hit-item">';
+							html += '<a href="/article/' + title + '" class="algolia-hit-item-link">';
+							html += getHighLight(title, ftitle);
+							html += '</a></div>';
+						}
+						generatePage(page, Number(data.total_pages), ftitle);
+						$("#non_empty_list").html(html);
+						haveArticles();
+					}else{
+						$("#algolia-hits-empty").html('未发现与 「' + ftitle + '」相关的内容');
+						haveNoneArticle();
+					}
+				}
+			});
+		}
+
+		$(document).ready(function(){
+			hideSearchWindow();
+
+			$(".popup-trigger").click(function(){
+				showSearchWindow();
+			})
+
+			$(".popup-btn-close").click(function(){
+				hideSearchWindow();
+			})
+
+			$(".ais-search-box--input").bind('input propertychange',function(){
+				var value = $(this).val();
+				if (value != undefined && value != ''){
+					searchArticle(value, 1);
+				}
+			})
+		})
+	</script>
 </body>

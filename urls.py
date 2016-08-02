@@ -15,4 +15,7 @@ urlpatterns = [
     	url(r'^tag/(?P<name>[\w]+)$', views.tag, name='tag'),
     	url(r'^tag/(?P<name>[\w]+)/(?P<page_number>[0-9]+)/$', views.tag, name='tag'),
     url(r'^tags/$', views.tags, name='tags'),
+
+    url(r'^search/(?P<title>[\w]+)$', views.search, name='search'),
+    url(r'^search/(?P<title>[\w]+)/(?P<page_number>[0-9]+)/$', views.search, name='search'),
 ]

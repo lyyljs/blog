@@ -1,6 +1,6 @@
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.utils import timezone
@@ -25,20 +25,19 @@ def getRightInfo():
 '''
 获取分页信息
 '''
-def getPageInfo(page_number):
+def getPageInfo(page_number, page_size, total_pages):
 	content_dict = {}
 	try:
 		page_number = int(page_number)
 	except ValueError:
 		page_number = 1
-	start_pos = (page_number - 1) * PAGE_SIZE
-	end_pos = start_pos + PAGE_SIZE
+	start_pos = (page_number - 1) * page_size
+	end_pos = start_pos + page_size
 
-	total_pages = Article.objects.all().count()
-	if (total_pages/PAGE_SIZE == total_pages//PAGE_SIZE):
-		total_pages //= PAGE_SIZE
+	if (total_pages/page_size == total_pages//page_size):
+		total_pages //= page_size
 	else:
-		total_pages = total_pages//PAGE_SIZE + 1
+		total_pages = total_pages//page_size + 1
 
 	if (page_number < total_pages - 1 and page_number > 2):
 		l_range = range(page_number-1,page_number+2)
@@ -59,8 +58,8 @@ def getPageInfo(page_number):
 blog列表
 '''
 def index(request,page_number=1):
-	content_dict = getPageInfo(page_number)
-
+	total_count = Article.objects.filter(is_draft=False).count()
+	content_dict = getPageInfo(page_number, PAGE_SIZE, total_count)
 	latest_blog_list = Article.objects.filter(is_draft=False).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
 	for blog in latest_blog_list:
 		blog.comment_counts = blog.comment_set.all().count()
@@ -75,8 +74,8 @@ def index(request,page_number=1):
 归档
 '''
 def archives(request,page_number=1):
-	content_dict = getPageInfo(page_number)
-
+	total_count = Article.objects.filter(is_draft=False).count()
+	content_dict = getPageInfo(page_number, PAGE_SIZE, total_count)
 	latest_blog_list = Article.objects.filter(is_draft=False).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
 	node_list = []
 	year_node = latest_blog_list[0]
@@ -132,9 +131,10 @@ def article(request,title):
 分类
 '''
 def category(request,name,page_number=1):
-	content_dict = getPageInfo(page_number)
 	category = Category.objects.get(category_name=name)
-	node_list = Article.objects.filter(is_draft=False).filter(category=category).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
+	total_count = Article.objects.filter(is_draft=False,category=category).count()
+	content_dict = getPageInfo(page_number, PAGE_SIZE,total_count)
+	node_list = Article.objects.filter(is_draft=False,category=category).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
 
 	content_dict['this_url'] = 'blog:category'
 	content_dict['param'] = name
@@ -198,8 +198,9 @@ def get_tag_cloud(tags):
 标签
 '''
 def tag(request,name,page_number=1):
-	content_dict = getPageInfo(page_number)
 	tag = Tag.objects.get(tag_name=name)
+	total_count = Article.objects.filter(is_draft=False, tags=tag).count()
+	content_dict = getPageInfo(page_number, PAGE_SIZE, total_count)
 	node_list = Article.objects.filter(is_draft=False, tags=tag).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
 
 	content_dict['this_url'] = 'blog:tag'
@@ -221,3 +222,28 @@ def tags(request):
 	content_dict.update(getHeaderInfo())
 	content_dict.update(getRightInfo())
 	return render(request, 'blog/tags.html', content_dict)
+
+'''
+获取文章标题列表
+'''
+def getArticleTitleList(blog_list):
+	names = []
+	for article in blog_list:
+		names.append(article.title)
+	return names
+
+'''
+搜索文章
+'''
+def search(request,title,page_number=1):
+	total_count = Article.objects.filter(is_draft=False,title__icontains=title).count()
+	content_dict = getPageInfo(page_number, PAGE_SIZE, total_count)
+
+	blog_list = Article.objects.filter(is_draft=False,title__icontains=title).order_by('-create_time')[content_dict['start_pos']:content_dict['end_pos']]
+	content_dict['blog_list'] = getArticleTitleList(blog_list)
+	content_dict['total_count'] = total_count
+
+	content_dict.pop('l_range')
+	content_dict.pop('start_pos')
+	content_dict.pop('end_pos')
+	return JsonResponse(content_dict)
