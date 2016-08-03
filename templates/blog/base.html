@@ -102,13 +102,40 @@
 		}
 
 		function generatePage(page, total_pages, key){
+			var prevLen;
+			var startPage;
+			var endPage;
+			var pageLen = 8;
+
+			if (pageLen >= total_pages){
+				startPage = 1;
+				endPage = total_pages;
+			}else{
+				prevLen = Math.floor(pageLen/2);
+				startPage = page - prevLen;
+				endPage = page + pageLen - prevLen - 1;
+				if (startPage < 0){
+					endPage -= startPage;
+					startPage = 0;
+				}
+				if (endPage >= total_pages){
+					startPage = startPage - endPage + total_pages - 1;
+					endPage = total_pages - 1;
+				}
+				if (startPage < 0){
+					startPage = 0;
+				}
+				startPage ++;
+				endPage ++;
+			}
+
 			var html = '';
 			if (page > 1){
 				html += '<li class="ais-pagination--item pagination-item ais-pagination--item__previous">';
 				html += '<a class="ais-pagination--link page-number" href=\'javascript:goToPage("' + key + '",' + (page-1) + 
 					')\'><i class="fa fa-angle-left"></i></a></li>';
 			}
-			for (var i = 1; i <= total_pages; i++){
+			for (var i = startPage; i <= endPage; i++){
 				html += '<li class="ais-pagination--item pagination-item ais-pagination--item__page';
 				if (page == i){
 					html += ' ais-pagination--item__active current';
